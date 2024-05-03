@@ -1,6 +1,6 @@
-const hasValuesFromArray = (set, array) => {
-  for (const item of array) {
-    if (!set.has(item)) {
+const hasValuesFromArray = (cat, ars) => {
+  for (const i of ars) {
+    if (!cat.has(i)) {
       return false;
     }
   }
