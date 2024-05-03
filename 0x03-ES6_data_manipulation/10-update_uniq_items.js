@@ -1,11 +1,11 @@
-const updateUniqueItems = (map) => {
-  if (map instanceof Map) {
-    for (const [key, value] of map.entries()) {
-      if (value === 1) {
-        map.set(key, 100);
+const updateUniqueItems = (kar) => {
+  if (kar instanceof Map) {
+    for (const [k, v] of kar.entries()) {
+      if (v === 1) {
+        kar.set(k, 100);
       }
     }
-    return map;
+    return kar;
   }
   throw new Error('Cannot process');
 };
