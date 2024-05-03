@@ -5,14 +5,14 @@ interface Teacher {
   yearsOfExperience?: Number,
   location: string,
   [propName: string]: any,
-}
+  }
 
 interface Directors extends Teacher {
   numberOfReports: Number,
 }
 
 interface printTeacherFunction {
-  (firstName: string, lastName: string): string;
+  (firstName: string, lastName: string): string;  
 }
 
 const printTeacher: printTeacherFunction = (firstName: string, lastName: string): string => `${firstName.charAt(0)}.${lastName}`;
