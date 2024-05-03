@@ -1,4 +1,3 @@
-// task_0/js/main.ts
 interface Student {
   firstName: string;
   lastName: string;
