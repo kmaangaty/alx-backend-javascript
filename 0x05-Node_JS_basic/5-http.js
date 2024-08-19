@@ -32,10 +32,11 @@ const countStudents = (path) => new Promise((resolve, reject) => {
             groups[field] = [];
           }
 
-          const student = props.reduce((obj, prop, idx) => {
-            obj[prop] = studentProps[idx];
-            return obj;
-          }, {});
+          // Create a new object instead of mutating the parameter
+          const student = props.reduce((acc, prop, idx) => ({
+            ...acc,
+            [prop]: studentProps[idx],
+          }), {});
 
           groups[field].push(student);
         });
