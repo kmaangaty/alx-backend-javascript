@@ -38,8 +38,10 @@ const countStudents = (filePath) => new Promise((resolve, reject) => {
         console.log(`Number of students in ${dept}: ${students.length}. List: ${studentNames}`);
       }
 
-      resolve(true);
+      return resolve(true); // Ensure that the promise always returns a value
     }
+
+    return resolve(false); // Return a value even if content is undefined (safety fallback)
   });
 });
 
