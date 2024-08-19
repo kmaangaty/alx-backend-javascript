@@ -1,9 +1,9 @@
 const express = require('express');
 const fs = require('fs');
 
-const SERVER_APP = express();
-const SERVER_PORT = 1245;
-const DATABASE_FILE = process.argv.length > 2 ? process.argv[2] : '';
+const app = express();
+const port = 1245;
+const dbFile = process.argv.length > 2 ? process.argv[2] : '';
 
 /**
  * Counter
@@ -18,58 +18,56 @@ const countStudents = (filePath) => new Promise((resolve, reject) => {
         reject(new Error('Cannot load the database'));
       }
       if (data) {
-        const reportSections = [];
-        const fileLines = data.toString('utf-8').trim().split('\n');
-        const studentCategories = {};
-        const dbFieldNames = fileLines[0].split(',');
-        const studentFieldNames = dbFieldNames.slice(0, dbFieldNames.length - 1);
+        const report = [];
+        const lines = data.toString('utf-8').trim().split('\n');
+        const categories = {};
+        const fields = lines[0].split(',');
+        const studentFields = fields.slice(0, fields.length - 1);
 
-        for (const line of fileLines.slice(1)) {
+        for (const line of lines.slice(1)) {
           const studentData = line.split(',');
-          const studentFieldValues = studentData.slice(0, studentData.length - 1);
+          const studentValues = studentData.slice(0, studentData.length - 1);
           const category = studentData[studentData.length - 1];
-          if (!Object.keys(studentCategories).includes(category)) {
-            studentCategories[category] = [];
+          if (!Object.keys(categories).includes(category)) {
+            categories[category] = [];
           }
-          const studentEntries = studentFieldNames.map((fieldName, idx) => [
-            fieldName, studentFieldValues[idx]]);
-          studentCategories[category].push(Object.fromEntries(studentEntries));
+          const entries = studentFields.map((field, idx) => [
+            field, studentValues[idx]]);
+          categories[category].push(Object.fromEntries(entries));
         }
 
-        const totalStudentCount = Object
-          .values(studentCategories).reduce((previous, current) => (previous || [])
-            .length + current.length);
-        reportSections.push(`Number of students: ${totalStudentCount}`);
-        for (const [category, students] of Object.entries(studentCategories)) {
-          reportSections.push(`Number of students in ${category}: ${students.length}. List: ${students.map(
+        const total = Object.values(categories)
+          .reduce((prev, curr) => (prev || []).length + curr.length);
+        report.push(`Number of students: ${total}`);
+        for (const [category, students] of Object.entries(categories)) {
+          report.push(`Number of students in ${category}: ${students.length}. List: ${students.map(
             (student) => student.firstname,
-          ).join(', ')
-          }`);
+          ).join(', ')}`);
         }
-        resolve(reportSections.join('\n'));
+        resolve(report.join('\n'));
       }
     });
   }
 });
 
-SERVER_APP.get('/', (_, res) => {
+app.get('/', (_, res) => {
   res.send('Hello Holberton School!');
 });
 
-SERVER_APP.get('/students', (_, res) => {
-  const responseSections = ['This is the list of our students'];
-  countStudents(DATABASE_FILE)
+app.get('/students', (_, res) => {
+  const response = ['This is the list of our students'];
+  countStudents(dbFile)
     .then((report) => {
-      responseSections.push(report);
-      const responseText = responseSections.join('\n');
+      response.push(report);
+      const responseText = response.join('\n');
       res.setHeader('Content-Type', 'text/plain');
       res.setHeader('Content-Length', responseText.length);
       res.statusCode = 200;
       res.write(Buffer.from(responseText));
     })
     .catch((err) => {
-      responseSections.push(err instanceof Error ? err.message : err.toString());
-      const responseText = responseSections.join('\n');
+      response.push(err instanceof Error ? err.message : err.toString());
+      const responseText = response.join('\n');
       res.setHeader('Content-Type', 'text/plain');
       res.setHeader('Content-Length', responseText.length);
       res.statusCode = 200;
@@ -77,8 +75,8 @@ SERVER_APP.get('/students', (_, res) => {
     });
 });
 
-SERVER_APP.listen(SERVER_PORT, () => {
-  console.log(`Server listening on PORT ${SERVER_PORT}`);
+app.listen(port, () => {
+  console.log(`Server listening on PORT ${port}`);
 });
 
-module.exports = SERVER_APP;
+module.exports = app;
