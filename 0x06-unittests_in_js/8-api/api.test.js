@@ -1,16 +1,17 @@
 const request = require('request');
 const { expect } = require('chai');
+const server = require('./api'); // Import the server instance
 
 describe('Index page', () => {
-  let server;
+  let serverInstance;
 
   before((done) => {
-    server = require('./api');
+    serverInstance = server;
     done();
   });
 
   after((done) => {
-    server.close(done);
+    serverInstance.close(done); // Ensure the server is properly closed
   });
 
   it('should return status code 200', (done) => {
