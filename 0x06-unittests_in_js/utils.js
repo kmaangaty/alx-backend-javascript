@@ -1,16 +1,20 @@
 const Utils = {
-  calculateNumber(type, a, b) {
+  calculateNumber: function (type, a, b) {
+    const roundedA = Math.round(a);
+    const roundedB = Math.round(b);
+
     if (type === 'SUM') {
-      return Math.round(a) + Math.round(b);
+      return roundedA + roundedB;
+    } else if (type === 'SUBTRACT') {
+      return roundedA - roundedB;
+    } else if (type === 'DIVIDE') {
+      if (roundedB === 0) {
+        return 'Error';
+      }
+      return roundedA / roundedB;
     }
-    if (type === 'SUBTRACT') {
-      return Math.round(a) - Math.round(b);
-    }
-    if (type === 'DIVIDE') {
-      return Math.round(b) === 0 ? 'Error' : Math.round(a) / Math.round(b);
-    }
-    return 0;
-  },
+    return null;
+  }
 };
 
 module.exports = Utils;
